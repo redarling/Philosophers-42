@@ -35,11 +35,9 @@ typedef struct s_philo
 {
 	int				num;
 	long long		to_die;
-	long long		to_eat;
-	int				meals;
+	long			meals;
 	t_data			*data;
 	struct s_root	*root;
-	bool			meals_finish;
 	pthread_mutex_t	left_fork;
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	*first_fork;

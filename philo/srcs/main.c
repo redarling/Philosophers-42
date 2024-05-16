@@ -33,7 +33,6 @@ static void	fill_philos(t_philo *philos, t_data *data, int i)
 	philos[i].num = i;
 	philos[i].meals = 0;
 	philos[i].data = data;
-	philos[i].meals_finish = false;
 	pthread_mutex_init(&philos[i].left_fork, NULL);
 	if (i + 1 == data->number_of_philo)
 		philos[i].right_fork = &(philos[0]).left_fork;

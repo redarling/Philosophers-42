@@ -14,33 +14,28 @@
 
 static int	check_death(t_philo *philo)
 {
+	if (monitoring(philo) == 0)
+		return (0);
 	if (get_time() + philo->data->time_to_eat > philo->to_die)
 	{
-		pthread_mutex_unlock(philo->first_fork);
 		died(philo);
 		return (0);
 	}
+	if (monitoring(philo) == 0)
+		return (0);
 	return (1);
 }
 
-static int	actions(t_philo *philo)
+static int	actions(t_philo *philo, long long i)
 {
-	if (monitoring(philo) == 0)
-		return (0);
 	pthread_mutex_lock(philo->first_fork);
-	if (get_time() + philo->data->time_to_eat <= philo->to_die)
+	if (get_time() + philo->data->time_to_eat <= philo->to_die && i != 0)
+		is_eating(philo);
+	else
 		is_eating(philo);
 	if (check_death(philo) == 0)
 		return (0);
-	if (monitoring(philo) == 0)
-		return (0);
-	if (check_death(philo) == 0)
-		return (0);
 	is_sleeping(philo);
-	if (check_death(philo) == 0)
-		return (0);
-	if (monitoring(philo) == 0)
-		return (0);
 	if (check_death(philo) == 0)
 		return (0);
 	is_thinking(philo);
@@ -63,8 +58,10 @@ int	monitoring(t_philo *philo)
 
 static void	*philo_routine(void *phil)
 {
-	t_philo	*philo;
+	t_philo		*philo;
+	long long	i;
 
+	i = 0;
 	philo = (t_philo *)phil;
 	philo->to_die = philo->data->start_time + \
 		philo->data->time_to_die;
@@ -72,8 +69,9 @@ static void	*philo_routine(void *phil)
 		ft_usleep(get_time() + philo->data->time_to_eat);
 	while (1)
 	{
-		if (actions(philo) == 0)
+		if (actions(philo, i) == 0)
 			return (NULL);
+		i++;
 	}
 	return (NULL);
 }
@@ -85,14 +83,16 @@ void	create_and_join_threads(t_root *root)
 	i = 0;
 	while (i < root->quantity)
 	{
-		pthread_create(&root->threads[i], NULL, philo_routine,
-			(void *)&root->philos[i]);
+		if (pthread_create(&root->threads[i], NULL, philo_routine,
+				(void *)&root->philos[i]) != 0)
+			return ;
 		i++;
 	}
 	i = 0;
 	while (i < root->quantity)
 	{
-		pthread_join(root->threads[i], NULL);
+		if (pthread_join(root->threads[i], NULL) != 0)
+			return ;
 		i++;
 	}
 }
