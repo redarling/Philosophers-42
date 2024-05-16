@@ -31,6 +31,12 @@ static int	actions(t_philo *philo, long long i)
 	pthread_mutex_lock(philo->first_fork);
 	if (get_time() + philo->data->time_to_eat <= philo->to_die && i != 0)
 		is_eating(philo);
+	else if (get_time() + philo->data->time_to_eat > philo->to_die && i > 0)
+	{
+		pthread_mutex_unlock(philo->first_fork);
+		died(philo);
+		return (0);
+	}
 	else
 		is_eating(philo);
 	if (check_death(philo) == 0)
