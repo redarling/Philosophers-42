@@ -6,11 +6,22 @@
 /*   By: asyvash <asyvash@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 10:22:55 by asyvash           #+#    #+#             */
-/*   Updated: 2024/05/12 17:52:34 by asyvash          ###   ########.fr       */
+/*   Updated: 2024/05/16 11:57:32 by asyvash          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+static int	check_death(t_philo *philo)
+{
+	if (get_time() + philo->data->time_to_eat > philo->to_die)
+	{
+		pthread_mutex_unlock(philo->first_fork);
+		died(philo);
+		return (0);
+	}
+	return (1);
+}
 
 static int	actions(t_philo *philo)
 {
@@ -19,22 +30,22 @@ static int	actions(t_philo *philo)
 	pthread_mutex_lock(philo->first_fork);
 	if (get_time() + philo->data->time_to_eat <= philo->to_die)
 		is_eating(philo);
-	else
-	{
-		pthread_mutex_unlock(philo->first_fork);
-		if (get_time() + philo->data->time_to_eat > philo->to_die)
-			died(philo);
+	if (check_death(philo) == 0)
 		return (0);
-	}
-	if (get_time() + philo->data->time_to_sleep > philo->to_die)
-	{
-		philo->to_die -= philo->data->time_to_eat;
-		died(philo);
+	if (monitoring(philo) == 0)
 		return (0);
-	}
-	else
-		is_sleeping(philo);
+	if (check_death(philo) == 0)
+		return (0);
+	is_sleeping(philo);
+	if (check_death(philo) == 0)
+		return (0);
+	if (monitoring(philo) == 0)
+		return (0);
+	if (check_death(philo) == 0)
+		return (0);
 	is_thinking(philo);
+	if (check_death(philo) == 0)
+		return (0);
 	return (1);
 }
 
@@ -67,7 +78,7 @@ static void	*philo_routine(void *phil)
 	return (NULL);
 }
 
-void	routine(t_root *root)
+void	create_and_join_threads(t_root *root)
 {
 	int	i;
 

@@ -6,7 +6,7 @@
 /*   By: asyvash <asyvash@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:57:19 by asyvash           #+#    #+#             */
-/*   Updated: 2024/05/12 18:53:16 by asyvash          ###   ########.fr       */
+/*   Updated: 2024/05/16 11:34:10 by asyvash          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,6 @@ void	ft_usleep(long long waiting_time)
 		usleep(1000 * (waiting_time - time - 1));
 		time = get_time();
 	}
-	while (waiting_time > time)
+	while (waiting_time >= time)
 		time = get_time();
 }

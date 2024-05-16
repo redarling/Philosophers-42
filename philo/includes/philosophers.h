@@ -6,7 +6,7 @@
 /*   By: asyvash <asyvash@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 22:44:04 by asyvash           #+#    #+#             */
-/*   Updated: 2024/05/12 18:54:00 by asyvash          ###   ########.fr       */
+/*   Updated: 2024/05/16 11:40:36 by asyvash          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ typedef struct s_root
 	bool			stop_sim;
 }	t_root;
 
-void		routine(t_root *philo_r);
+void		create_and_join_threads(t_root *root);
 int			monitoring(t_philo *philo);
 
 /* ACTIONS */

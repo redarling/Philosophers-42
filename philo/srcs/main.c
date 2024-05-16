@@ -6,7 +6,7 @@
 /*   By: asyvash <asyvash@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 22:43:44 by asyvash           #+#    #+#             */
-/*   Updated: 2024/05/12 18:56:28 by asyvash          ###   ########.fr       */
+/*   Updated: 2024/05/16 11:40:47 by asyvash          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ int	main(int argc, char **argv)
 		ft_putstr_fd("Allocation error\n", 2);
 		return (1);
 	}
-	routine(&root);
+	create_and_join_threads(&root);
 	free_all(&root);
 	return (0);
 }
