@@ -64,6 +64,10 @@ void		is_sleeping(t_philo *philo);
 void		is_thinking(t_philo *philo);
 void		died(t_philo *philo);
 
+/* ACTIONS UTILS */
+void		handle_meals(t_philo *philo);
+int			check_death(t_philo *philo, long long time_to_check);
+
 /* TIME */
 long long	get_time(void);
 void		ft_usleep(long long waiting_time);
