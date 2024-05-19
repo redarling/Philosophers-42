@@ -12,17 +12,43 @@
 
 #include "philosophers.h"
 
+static int	check_death(t_philo *philo)
+{
+	if (monitoring(philo) == 0)
+		return (0);
+	if (get_time() + philo->data->time_to_eat > philo->to_die)
+	{
+		died(philo);
+		return (0);
+	}
+	if (monitoring(philo) == 0)
+		return (0);
+	return (1);
+}
+
 static int	actions(t_philo *philo)
 {
 	pthread_mutex_lock(philo->first_fork);
-	is_eating(philo);
-	if (monitoring(philo) == 0)
+	if (get_time() + philo->data->time_to_eat <= philo->to_die)
+		is_eating(philo);
+	else
+	{
+		print_msg(philo, "has taken a fork");
+		pthread_mutex_lock(philo->second_fork);
+		print_msg(philo, "has taken a fork");
+		print_msg(philo, "is eating");
+		pthread_mutex_unlock(philo->first_fork);
+		pthread_mutex_unlock(philo->second_fork);
+		died(philo);
+		return (0);
+	}
+	if (check_death(philo) == 0)
 		return (0);
 	is_sleeping(philo);
-	if (monitoring(philo) == 0)
+	if (check_death(philo) == 0)
 		return (0);
 	is_thinking(philo);
-	if (monitoring(philo) == 0)
+	if (check_death(philo) == 0)
 		return (0);
 	return (1);
 }

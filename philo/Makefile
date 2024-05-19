@@ -1,5 +1,5 @@
 SRCS		=	$(addprefix srcs/,utils.c main.c check_input.c \
-					actions.c actions_utils.c routine.c)
+					actions.c routine.c)
 
 OBJS		=	${SRCS:.c=.o}
 
