@@ -6,24 +6,21 @@
 /*   By: asyvash <asyvash@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 10:22:55 by asyvash           #+#    #+#             */
-/*   Updated: 2024/05/16 11:57:32 by asyvash          ###   ########.fr       */
+/*   Updated: 2024/05/20 13:55:55 by asyvash          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-static int	check_death(t_philo *philo)
+static void	start_eating_but_die(t_philo *philo)
 {
-	if (monitoring(philo) == 0)
-		return (0);
-	if (get_time() + philo->data->time_to_eat > philo->to_die)
-	{
-		died(philo);
-		return (0);
-	}
-	if (monitoring(philo) == 0)
-		return (0);
-	return (1);
+	print_msg(philo, "has taken a fork");
+	pthread_mutex_lock(philo->second_fork);
+	print_msg(philo, "has taken a fork");
+	print_msg(philo, "is eating");
+	pthread_mutex_unlock(philo->first_fork);
+	pthread_mutex_unlock(philo->second_fork);
+	died(philo);
 }
 
 static int	actions(t_philo *philo)
@@ -33,22 +30,23 @@ static int	actions(t_philo *philo)
 		is_eating(philo);
 	else
 	{
-		print_msg(philo, "has taken a fork");
-		pthread_mutex_lock(philo->second_fork);
-		print_msg(philo, "has taken a fork");
-		print_msg(philo, "is eating");
-		pthread_mutex_unlock(philo->first_fork);
-		pthread_mutex_unlock(philo->second_fork);
+		start_eating_but_die(philo);
+		return (0);
+	}
+	if (monitoring(philo) == 0)
+		return (0);
+	if (get_time() + philo->data->time_to_sleep <= philo->to_die)
+		is_sleeping(philo);
+	else
+	{
+		print_msg(philo, "is sleeping");
 		died(philo);
 		return (0);
 	}
-	if (check_death(philo) == 0)
-		return (0);
-	is_sleeping(philo);
-	if (check_death(philo) == 0)
+	if (monitoring(philo) == 0)
 		return (0);
 	is_thinking(philo);
-	if (check_death(philo) == 0)
+	if (monitoring(philo) == 0)
 		return (0);
 	return (1);
 }
