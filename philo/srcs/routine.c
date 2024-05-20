@@ -35,16 +35,16 @@ static int	actions(t_philo *philo)
 	}
 	if (monitoring(philo) == 0)
 		return (0);
-	if (get_time() + philo->data->time_to_sleep <= philo->to_die)
+	if (get_time() + philo->data->time_to_sleep <= \
+		philo->to_die - philo->data->time_to_eat)
 		is_sleeping(philo);
 	else
 	{
+		philo->to_die -= philo->data->time_to_eat;
 		print_msg(philo, "is sleeping");
 		died(philo);
 		return (0);
 	}
-	if (monitoring(philo) == 0)
-		return (0);
 	is_thinking(philo);
 	if (monitoring(philo) == 0)
 		return (0);
